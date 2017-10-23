@@ -1,0 +1,22 @@
+{
+  "name": "mocha-spa-reporter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha ./example --reporter ./index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/potapovDim/mocha-spa-reporter.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/potapovDim/mocha-spa-reporter/issues"
+  },
+  "homepage": "https://github.com/potapovDim/mocha-spa-reporter#readme",
+  "devDependencies": {
+    "mocha": "^4.0.1"
+  }
+}
