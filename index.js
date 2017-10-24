@@ -1,58 +1,58 @@
 const Base = require("mocha").reporters.Base
-
-function Spa () {
-  this.opts = {}
-}
-
-
-Spa.prototype.setOptions = function (opts) {
-  this.opts = opts
-}
+const Spec = require("mocha").reporters.Spec
+const Spa = require('./reporter').Spa
+const Suit = require('./suit').Suit
+const Test = require('./test').Test
 
 const spaReporter = new Spa()
+
 function SpaReporter(runner, opts) {
-    Base.call(this, runner)
-    spaReporter.setOptions(opts.reporterOptions || {})
-
-    function invokeHanlder(handler) {
-        return function() {
-            try {
-                return handler.apply(this, arguments)
-            } catch(error) {
-                console.error(error)
-            }
+  Base.call(this, runner)
+  // Spec.call(this, runner)
+  function invokeHanlder(handler) {
+    return function() {
+        try {
+            return handler.apply(this, arguments);
+        } catch(error) {
+            console.error("Internal error in Allure:", error); // eslint-disable-line no-console
         }
-    }
-
-    runner.on("suite", invokeHanlder(function (suite) {
-      console.log('suite ', suite.title)
-      // console.log(suite)
-    }))
-
-    runner.on("suite end", invokeHanlder(function (suite) {
-      console.log('suit end')
-    }))
-
-    runner.on("test", invokeHanlder(function(test) {
-
-      console.log("test", test.title)
-    }))
-
-    runner.on("pending", invokeHanlder(function(test) {
-      console.log('pending')
-    }))
-
-    runner.on("pass", invokeHanlder(function() {
-      console.log('pass')
-    }))
-
-    runner.on("fail", invokeHanlder(function(test, err) {
-      console.log(test, err, 'fail')
-    }))
-
-    runner.on("hook end", invokeHanlder(function(hook) {
-      console.log('hook end')
-    }))
+    };
 }
+  runner.on("suite", function (suite) {
+    if(!suite.root) {
+      spaReporter.runSuit(new Suit(suite.fullTitle()))
+    }
+  })
+
+
+  runner.on("test", invokeHanlder(function (test) {
+    if(spaReporter.currentSuit) {
+      spaReporter.currentSuit.startTest(new Test(test.title))
+    }
+  }))
+
+  runner.on("pending", invokeHanlder(function (test) {
+
+  }))
+
+  runner.on("pass", function (test) {
+
+  })
+
+  runner.on("fail", function (test, err) {
+
+  })
+
+  runner.on("hook end", function (hook) {
+
+  })
+
+  runner.on("suite end", invokeHanlder(function (suite) {
+    console.log('!!!!!!!!!!!!!', suite.root)
+    suite.root ? spaReporter.createReport() : spaReporter.endSuit()
+  }))
+}
+
+
 
 module.exports = SpaReporter
