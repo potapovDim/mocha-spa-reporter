@@ -8,6 +8,21 @@ const idGenerator = (length) => {
     return id
 }
 
+const assertDirExists = () => {
+    if ('darwin' === process.platform) {
+        let dirStructure = ''
+        const { spawn } = require('child_process')
+        const ls = spawn('ls')
+        ls.stdout.on('data', (data) => {
+            dirStructure += data.toString()
+        })
+        ls.on('exit', () => {
+            if (!dirStructure.includes('spa-report')) {
+                spawn('mkdir', ['spa-report'])
+            }
+        })
+    }
+}
 
 let a = [{
     "title": "a",
@@ -69,6 +84,7 @@ const dataToJson = (allTests) => {
 }
 
 module.exports = {
+    assertDirExists,
     dataToJson,
     idGenerator
 }
