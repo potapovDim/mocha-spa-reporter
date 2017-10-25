@@ -1,39 +1,43 @@
-const {assertDirExists} = require('./utils')
+const {
+    assertRootDirExist,
+    assertResultDirExist,
+    generateReport
+} = require('./utils')
+
+const {Step} = require('./step')
 
 function Spa() {
-    this.dirName = `Run time ${new Date().toLocaleString()}`
+    this.dirName = `Date=${new Date().toLocaleDateString()} Time=${new Date().getHours()}-${new Date().getMinutes()}`
     this.opts = {}
     this.suits = []
     this.currentSuit = null
     this.stats = null
 }
 
-Spa.prototype.setUpEcoSystem = function() {
-}
-
-Spa.prototype.attachFile = function (title, data) {
-    const fs = require('fs')
-    const path = require('path')
-    if(data instanceof Buffer && data.length !== 0) {
-        const month = new Date().getMonth()
-        const day = new Date().getDay()
-        const hours = new Date().getHours()
-    }
-}
-
 Spa.prototype.runSuit = function (suit) {
-    assertDirExists()
+    assertRootDirExist()
     this.currentSuit = suit
     this.suits.push(suit)
 }
 
+Spa.prototype.getCurrentSuit = function (dsa) {
+    return this.currentSuit
+}
+
+Spa.prototype.attachData = function (data) {
+    this.getCurrentSuit().getCurrentTest().attachFile+(data)
+}
+
+Spa.prototype.createStep = function (title) {
+    this.getCurrentSuit().getCurrentTest().addStep(new Step(title))
+}
+
+Spa.prototype.setUpEcoSystem = function () {
+
+}
 
 Spa.prototype.endSuit = function () {
     this.currentSuit = null
-}
-
-Spa.prototype.getCurrentSuit = function () {
-    return this.currentSuit
 }
 
 Spa.prototype.toJSON = function () {
@@ -48,11 +52,18 @@ Spa.prototype.createReport = function () {
     const fs = require('fs')
     const path = require('path')
     const data = this.toJSON()
-    fs.writeFile('./test.json', JSON.stringify(data, null, '\t'), (err) => {
-        if (err) {
-            console.log(err)
-        }
-    })
+    assertResultDirExist(this.dirName, generateReport(this.dirName, data))
 }
 
-module.exports = { Spa }
+
+Spa.prototype.buidPublickApi = function() {
+    const self = this
+    return {
+        createStep: self.createStep.bind(self),
+        attachData: self.attachData.bind(self)
+    }
+}
+
+module.exports = {
+    Spa
+}

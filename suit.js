@@ -10,12 +10,12 @@ Suit.prototype.startTest = function(test) {
     this.tests.push(test)
 }
 
-Suit.prototype.end = function() {
-    this.currentTest = null
-}
-
 Suit.prototype.getCurrentTest = function() {
     return this.currentTest
+}
+
+Suit.prototype.endTest = function() {
+    this.currentTest = null
 }
 
 Suit.prototype.toJSON = function () {

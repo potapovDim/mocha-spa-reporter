@@ -8,83 +8,90 @@ const idGenerator = (length) => {
     return id
 }
 
-const assertDirExists = () => {
-    if ('darwin' === process.platform) {
-        let dirStructure = ''
-        const { spawn } = require('child_process')
-        const ls = spawn('ls')
-        ls.stdout.on('data', (data) => {
-            dirStructure += data.toString()
+
+const assertConvertToJson = (data) => {
+    if (typeof data === 'string') {
+        return false
+    }
+    try {
+        JSON.stringify(data)
+        return true
+    } catch (e) {
+        console.error(e.stack)
+        return false
+    }
+}
+
+const writeFile = (dir, data, id) => {
+    const fs = require('fs')
+    const path = require('path')
+    if (data instanceof Buffer && data.length !== 0) {
+        fs.writeFile(`./spa-report/${dir}/${id}.png`, data, (err) => {
+            if (err) {
+                console.log(err)
+            }
         })
-        ls.on('exit', () => {
-            if (!dirStructure.includes('spa-report')) {
-                spawn('mkdir', ['spa-report'])
+    } else if (assertConvertToJson(data)) {
+        fs.writeFile(`./spa-report/${dir}/${id}.json`, JSON.stringify(runStructure, null, '\t') , (err) => {
+            if (err) {
+                console.log(err)
+            }
+        })
+    } else {
+        fs.writeFile(`./spa-report/${dir}/${id}.txt`, data , (err) => {
+            if (err) {
+                console.log(err)
             }
         })
     }
 }
 
-let a = [{
-    "title": "a",
-    "body": "() => {\n    \n  }",
-    "async": 0,
-    "sync": true,
-    "timedOut": false,
-    "pending": false,
-    "type": "test",
-    "file": "C:\\Users\\dpot\\Desktop\\mocha-learn\\mocha-spa-reporter\\example\\a.js",
-    "parent": "#<Suite>",
-    "ctx": "#<Context>",
-    "id": "KB1A3nIkWZ3K",
-    "duration": 0,
-    "state": "passed",
-    "speed": "fast"
-},
-{
-    "title": "B 0",
-    "body": "() => {\r\n      \r\n    }",
-    "async": 0,
-    "sync": true,
-    "timedOut": false,
-    "pending": false,
-    "type": "test",
-    "file": "C:\\Users\\dpot\\Desktop\\mocha-learn\\mocha-spa-reporter\\example\\b.js",
-    "parent": "#<Suite>",
-    "ctx": "#<Context>",
-    "id": "CyfIUfWxxyDc",
-    "duration": 0,
-    "state": "passed",
-    "speed": "fast"
-},
-{
-    "title": "B 1",
-    "body": "() => {\r\n      \r\n    }",
-    "async": 0,
-    "sync": true,
-    "timedOut": false,
-    "pending": false,
-    "type": "test",
-    "file": "C:\\Users\\dpot\\Desktop\\mocha-learn\\mocha-spa-reporter\\example\\b.js",
-    "parent": "#<Suite>",
-    "ctx": "#<Context>",
-    "id": "KzOThLTZ2pE1",
-    "duration": 0,
-    "state": "passed",
-    "speed": "fast"
-}]
 
+const generateReport = (dir, runStructure) => {
+    return () => {
+        const fs = require('fs')
+        fs.writeFile(`./spa-report/${dir}/test.json`, JSON.stringify(runStructure, null, '\t'), (err) => {
+            if (err) {
+                console.log(err)
+            }
+        })
+    }
+}
 
-const dataToJson = (allTests) => {
-    console.log('! c ')
-    const suites = {}
-    // allTests.forEach(function(element) {
-    //     console.log('!d', Object.keys(element), element['parent'])
-    //     console.log(element.parent)
-    // })
+const assertRootDirExist = () => {
+    let dirStructure = ''
+    const { spawn } = require('child_process')
+    const ls = spawn('ls')
+    ls.stdout.on('data', (data) => {
+        dirStructure += data.toString()
+    })
+    ls.on('exit', () => {
+        if (!dirStructure.includes('spa-report')) {
+            spawn('mkdir', ['spa-report'])
+        }
+    })
+}
+
+const assertResultDirExist = (outputDirResult, cb) => {
+    let dirStructure = ''
+    const { spawn } = require('child_process')
+    const ls = spawn('ls', ['spa-report'])
+    ls.stdout.on('data', (data) => {
+        dirStructure += data.toString()
+    })
+    ls.on('exit', () => {
+        if (!dirStructure.includes(outputDirResult)) {
+            const mkDir = spawn('mkdir', [`spa-report/${outputDirResult}`])
+            mkDir.on('exit', () => {
+                cb && cb()
+            })
+        }
+    })
 }
 
 module.exports = {
-    assertDirExists,
-    dataToJson,
+    assertRootDirExist,
+    assertResultDirExist,
+    generateReport,
     idGenerator
 }
