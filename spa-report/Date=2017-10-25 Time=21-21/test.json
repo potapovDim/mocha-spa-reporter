@@ -1,0 +1,13 @@
+{
+	"suits": [
+		{
+			"title": "A",
+			"tests": [
+				{
+					"title": "a",
+					"steps": []
+				}
+			]
+		}
+	]
+}
