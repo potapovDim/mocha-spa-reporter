@@ -15,7 +15,7 @@ function Spa() {
 }
 
 Spa.prototype.runSuit = function (suit) {
-    assertRootDirExist()
+    assertResultDirExist(this.dirName)
     this.currentSuit = suit
     this.suits.push(suit)
 }
@@ -52,7 +52,7 @@ Spa.prototype.createReport = function () {
     const fs = require('fs')
     const path = require('path')
     const data = this.toJSON()
-    assertResultDirExist(this.dirName, generateReport(this.dirName, data))
+    generateReport(this.dirName, data)
 }
 
 

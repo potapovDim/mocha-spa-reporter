@@ -32,13 +32,13 @@ const writeFile = (dir, data, id) => {
             }
         })
     } else if (assertConvertToJson(data)) {
-        fs.writeFile(`./spa-report/${dir}/${id}.json`, JSON.stringify(runStructure, null, '\t') , (err) => {
+        fs.writeFile(`./spa-report/${dir}/${id}.json`, JSON.stringify(runStructure, null, '\t'), (err) => {
             if (err) {
                 console.log(err)
             }
         })
     } else {
-        fs.writeFile(`./spa-report/${dir}/${id}.txt`, data , (err) => {
+        fs.writeFile(`./spa-report/${dir}/${id}.txt`, data, (err) => {
             if (err) {
                 console.log(err)
             }
@@ -48,14 +48,13 @@ const writeFile = (dir, data, id) => {
 
 
 const generateReport = (dir, runStructure) => {
-    return () => {
-        const fs = require('fs')
-        fs.writeFile(`./spa-report/${dir}/test.json`, JSON.stringify(runStructure, null, '\t'), (err) => {
-            if (err) {
-                console.log(err)
-            }
-        })
-    }
+    const fs = require('fs')
+    fs.writeFile(`./spa-report/${dir}/test.json`, JSON.stringify(runStructure, null, '\t'), (err) => {
+        if (err) {
+            console.log(err)
+        }
+    })
+
 }
 
 const assertRootDirExist = () => {
@@ -72,21 +71,12 @@ const assertRootDirExist = () => {
     })
 }
 
-const assertResultDirExist = (outputDirResult, cb) => {
-    let dirStructure = ''
-    const { spawn } = require('child_process')
-    const ls = spawn('ls', ['spa-report'])
-    ls.stdout.on('data', (data) => {
-        dirStructure += data.toString()
-    })
-    ls.on('exit', () => {
-        if (!dirStructure.includes(outputDirResult)) {
-            const mkDir = spawn('mkdir', [`spa-report/${outputDirResult}`])
-            mkDir.on('exit', () => {
-                cb && cb()
-            })
-        }
-    })
+const assertResultDirExist = (outputDirResult) => {
+    const mdkir = require('child_process').spawnSync('mkdir', [`spa-report/${outputDirResult}`])
+    if (mdkir.output.toString().includes('No such file or directory')) {
+        require('child_process').spawnSync('mkdir', [`spa-report`])
+        require('child_process').spawnSync('mkdir', [`spa-report/${outputDirResult}`])
+    }
 }
 
 module.exports = {
