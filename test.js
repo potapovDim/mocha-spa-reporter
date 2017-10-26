@@ -1,5 +1,5 @@
 
-const { idGenerator, writeFile } = require('./utils')
+const { idGenerator, outputFile } = require('./utils')
 
 
 function Test(title) {
@@ -18,17 +18,16 @@ Test.prototype.getCurrentStep = function () {
     return this.currentStep
 }
 
-Test.prototype.addFile = function (data) {
+Test.prototype.addFile = function (dir, data) {
     const id = idGenerator(25)
     this.files.push(id)
-    writeFile(id)
+    outputFile(dir, data, id)
 }
 
-Test.prototype.attachFile = function (file) {
-    console.log(file)
+Test.prototype.attachFile = function (dir, file) {
     this.getCurrentStep()
-        ? this.getCurrentStep().addFile(file)
-        : this.addFile(file)
+        ? this.getCurrentStep().addFile(dir, file)
+        : this.addFile(dir, file)
 }
 
 Test.prototype.toJSON = function () {

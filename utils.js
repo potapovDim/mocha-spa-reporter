@@ -22,7 +22,8 @@ const assertConvertToJson = (data) => {
     }
 }
 
-const writeFile = (dir, data, id) => {
+const outputFile = (dir, data, id) => {
+    console.log('!!!!!!!!!!!!!!!!')
     const fs = require('fs')
     const path = require('path')
     if (data instanceof Buffer && data.length !== 0) {
@@ -32,7 +33,7 @@ const writeFile = (dir, data, id) => {
             }
         })
     } else if (assertConvertToJson(data)) {
-        fs.writeFile(`./spa-report/${dir}/${id}.json`, JSON.stringify(runStructure, null, '\t'), (err) => {
+        fs.writeFile(`./spa-report/${dir}/${id}.json`, JSON.stringify(data, null, '\t'), (err) => {
             if (err) {
                 console.log(err)
             }
@@ -83,5 +84,6 @@ module.exports = {
     assertRootDirExist,
     assertResultDirExist,
     generateReport,
-    idGenerator
+    idGenerator,
+    outputFile
 }

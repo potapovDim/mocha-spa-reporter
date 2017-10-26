@@ -1,7 +1,8 @@
 const {
     assertRootDirExist,
     assertResultDirExist,
-    generateReport
+    generateReport,
+    writeFile
 } = require('./utils')
 
 const {Step} = require('./step')
@@ -20,12 +21,12 @@ Spa.prototype.runSuit = function (suit) {
     this.suits.push(suit)
 }
 
-Spa.prototype.getCurrentSuit = function (dsa) {
+Spa.prototype.getCurrentSuit = function () {
     return this.currentSuit
 }
 
 Spa.prototype.attachData = function (data) {
-    this.getCurrentSuit().getCurrentTest().attachFile+(data)
+    this.getCurrentSuit().getCurrentTest().attachFile(this.dirName, data)
 }
 
 Spa.prototype.createStep = function (title) {
@@ -42,7 +43,6 @@ Spa.prototype.endSuit = function () {
 
 Spa.prototype.toJSON = function () {
     const self = this
-    console.log(self.suits[0].tests[0].toJSON(), '-=-=-', self.suits.map(suit => suit.toJSON()))
     return {
         suits: [...self.suits.map(suit => suit.toJSON())]
     }

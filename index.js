@@ -10,7 +10,6 @@ global.spaReporter = spaReporter.buidPublickApi()
 
 function SpaReporter(runner, opts) {
   Base.call(this, runner)
-
   function invokeHanlder(handler) {
     return function () {
       try {
