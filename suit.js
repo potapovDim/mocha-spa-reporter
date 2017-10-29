@@ -11,7 +11,6 @@ Suit.prototype.startTest = function(test) {
 }
 
 Suit.prototype.getCurrentTest = function() {
-    console.log('get')
     return this.currentTest
 }
 

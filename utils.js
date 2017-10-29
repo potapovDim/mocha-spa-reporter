@@ -23,7 +23,6 @@ const assertConvertToJson = (data) => {
 }
 
 const outputFile = (dir, data, id) => {
-    console.log('!!!!!!!!!!!!!!!!')
     const fs = require('fs')
     const path = require('path')
     if (data instanceof Buffer && data.length !== 0) {

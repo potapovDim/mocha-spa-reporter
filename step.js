@@ -8,7 +8,6 @@ function Step(title) {
 Step.prototype.addFile = function (dir, file) {
     const id = idGenerator(25)
     this.files.push(id)
-    console.log('add file', id, this.files, typeof outputFile)
     try {
         outputFile(dir, file, id)
     } catch (e) {
