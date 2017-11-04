@@ -13,8 +13,6 @@ Step.prototype.addFile = function (dir, file) {
     } catch (e) {
         console.log(e)
     }
-    //outputFile(dir, data, id)
-
 }
 
 Step.prototype.toJSON = function () {

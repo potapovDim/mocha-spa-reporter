@@ -10,57 +10,49 @@ global.spaReporter = spaReporter.buidPublickApi()
 
 function SpaReporter(runner, opts) {
   Base.call(this, runner)
-  function invokeHanlder(handler) {
-    return function () {
-      try {
-        return handler.apply(this, arguments)
-      } catch (error) {
-        console.error(error)
-      }
-    }
-  }
   const self = this
   runner.on("suite", function (suite) {
     if (!suite.root) {
-      spaReporter.runSuit(new Suit(suite.fullTitle()))
+      console.log(suite.pending)
+      spaReporter.runSuit(new Suit(suite.fullTitle(), suite.pending && 'pending'))
     }
   })
 
-  runner.on("test", invokeHanlder(function (test) {
-    if (spaReporter.currentSuit) {
-      spaReporter.currentSuit.startTest(new Test(test.title))
+  runner.on("test", function (test) {
+    if (spaReporter.getCurrentSuit()) {
+      spaReporter.getCurrentSuit().startTest(new Test(test.title))
     }
-  }))
+  })
 
-  runner.on("pending", invokeHanlder(function (test) {
-
-  }))
+  runner.on("pending", function (test) {
+    spaReporter.getCurrentSuit().startTest(new Test(test.title))
+  })
 
   runner.on("pass", function (test) {
 
   })
 
   runner.on("fail", function (test, err) {
-
+    spaReporter.getCurrentSuit().getCurrentTest().attachStackError(err)
   })
 
   runner.on("hook end", function (hook) {
 
   })
-  runner.on("test end", () => {
-    spaReporter.getCurrentSuit().endTest()
+  runner.on("test end", (test) => {
+    const date = {
+      state: test.pending ? 'pending' : test.state,
+      speed: test.speed
+    }
+    spaReporter.getCurrentSuit().endTest(date)
   })
 
-  runner.on("suite end", invokeHanlder(function (suite) {
-    // if(suite.root) {
-    //   console.log(self)
-    // }
+  runner.on("suite end", function (suite) {
     spaReporter.endSuit()
-  }))
+  })
 
   runner.on("end", () => {
     spaReporter.createReport(self.stats)
-    console.log('end!!!!!!!!!!!!', self.stats)
   })
 }
 
