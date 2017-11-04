@@ -41,17 +41,18 @@ Spa.prototype.endSuit = function () {
     this.currentSuit = null
 }
 
-Spa.prototype.toJSON = function () {
+Spa.prototype.toJSON = function (stats) {
     const self = this
     return {
+        stats,
         suits: [...self.suits.map(suit => suit.toJSON())]
     }
 }
 
-Spa.prototype.createReport = function () {
+Spa.prototype.createReport = function (stats) {
     const fs = require('fs')
     const path = require('path')
-    const data = this.toJSON()
+    const data = this.toJSON(stats)
     generateReport(this.dirName, data)
 }
 

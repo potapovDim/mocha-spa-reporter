@@ -19,7 +19,7 @@ function SpaReporter(runner, opts) {
       }
     }
   }
-
+  const self = this
   runner.on("suite", function (suite) {
     if (!suite.root) {
       spaReporter.runSuit(new Suit(suite.fullTitle()))
@@ -52,8 +52,16 @@ function SpaReporter(runner, opts) {
   })
 
   runner.on("suite end", invokeHanlder(function (suite) {
-    suite.root ? spaReporter.createReport() : spaReporter.endSuit()
+    // if(suite.root) {
+    //   console.log(self)
+    // }
+    spaReporter.endSuit()
   }))
+
+  runner.on("end", () => {
+    spaReporter.createReport(self.stats)
+    console.log('end!!!!!!!!!!!!', self.stats)
+  })
 }
 
 module.exports = SpaReporter

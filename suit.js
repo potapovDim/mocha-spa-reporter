@@ -15,6 +15,7 @@ Suit.prototype.getCurrentTest = function() {
 }
 
 Suit.prototype.endTest = function() {
+    this.getCurrentTest().endTest()
     this.currentTest = null
 }
 

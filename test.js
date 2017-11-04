@@ -3,6 +3,8 @@ const { idGenerator, outputFile } = require('./utils')
 
 
 function Test(title) {
+    this.timeStart = +new Date()
+    this.timeEnd = null
     this.title = title
     this.steps = []
     this.files = []
@@ -30,10 +32,17 @@ Test.prototype.attachFile = function (dir, file) {
         : this.addFile(dir, file)
 }
 
+Test.prototype.endTest = function () {
+    this.timeEnd = + new Date()
+}
+
 Test.prototype.toJSON = function () {
     const self = this
     return {
         title: self.title,
+        timeStart: self.timeStart,
+        timeEnd: self.timeEnd,
+        durration: self.timeEnd - self.timeStart,
         steps: [...self.steps.map(step => step.toJSON())]
     }
 }
