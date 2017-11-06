@@ -3,7 +3,23 @@ function Suit(title, status = 'executed') {
     this.title = title
     this.runned = false
     this.tests = []
+    this.hooks = []
     this.currentTest = null
+    this.currentHook = null
+}
+
+Suit.prototype.startHook = function (hook) {
+    this.currentHook = hook
+    this.hooks.push(hook)
+}
+
+
+Suit.prototype.getCurrentHook = function () {
+    return this.currentHook
+}
+
+Suit.prototype.endHook = function () {
+    this.currentHook = null
 }
 
 Suit.prototype.startTest = function (test) {
@@ -25,6 +41,7 @@ Suit.prototype.toJSON = function () {
     return {
         title: self.title,
         status: self.status,
+        hooks: [...self.hooks.map(hook => hook.toJSON())],
         tests: [...self.tests.map(test => test.toJSON())]
     }
 }

@@ -1,13 +1,29 @@
 const fetch = require('node-fetch');
 const { expect } = require('chai');
 
-describe.skip('Ababbagalamaga', () => {
+describe('Ababbagalamaga', () => {
+
+  after('test after', () => {
+    // expect(1).to.eql(2)
+  })
+  afterEach('test afterEach', () => {
+    expect(1).to.eql(2)
+  })
+  before('test before', () => {
+
+  })
+  beforeEach('test beforeEach', () => {
+
+  })
+
+
   it('a-----------', async () => {
     // const imageProd = await fetch(`https://avatars0.githubusercontent.com/u/2991708?s=400&v=4`).then(res => res.buffer())
     spaReporter.createStep('step AAAAA')
     spaReporter.attachData({ test: 'test' })
     spaReporter.attachData('Step BBBBB')
     spaReporter.createStep('createStepdsadjasl')
+    expect(1).to.eql(2)
     // spaReporter.attachData(imageProd)
   })
 })

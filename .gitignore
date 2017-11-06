@@ -1,3 +1,4 @@
 package-lock.json
 node_modules/
 spa-report
+protractor5-typescript-async-await

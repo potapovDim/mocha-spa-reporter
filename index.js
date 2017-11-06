@@ -3,6 +3,7 @@ const Spec = require("mocha").reporters.Spec
 const Spa = require('./reporter').Spa
 const Suit = require('./suit').Suit
 const Test = require('./test').Test
+const Hook = require('./hook').Hook
 
 const spaReporter = new Spa()
 
@@ -13,9 +14,16 @@ function SpaReporter(runner, opts) {
   const self = this
   runner.on("suite", function (suite) {
     if (!suite.root) {
-      console.log(suite.pending)
       spaReporter.runSuit(new Suit(suite.fullTitle(), suite.pending && 'pending'))
     }
+  })
+
+  runner.on("hook end", function (hook) {
+    spaReporter.getCurrentSuit().endHook()
+  })
+
+  runner.on("hook", function (hook) {
+    spaReporter.getCurrentSuit().startHook(new Hook(hook.title))
   })
 
   runner.on("test", function (test) {
@@ -29,16 +37,12 @@ function SpaReporter(runner, opts) {
   })
 
   runner.on("pass", function (test) {
-
   })
 
   runner.on("fail", function (test, err) {
-    spaReporter.getCurrentSuit().getCurrentTest().attachStackError(err)
+    spaReporter.attachStackError(err)
   })
 
-  runner.on("hook end", function (hook) {
-
-  })
   runner.on("test end", (test) => {
     const date = {
       state: test.pending ? 'pending' : test.state,

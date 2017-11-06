@@ -5,7 +5,7 @@ const {
     writeFile
 } = require('./utils')
 
-const {Step} = require('./step')
+const { Step } = require('./step')
 
 function Spa() {
     this.dirName = `Date-${new Date().toLocaleDateString()}@Time-${new Date().getHours()}-${new Date().getMinutes()}`
@@ -21,6 +21,15 @@ Spa.prototype.runSuit = function (suit) {
     this.suits.push(suit)
 }
 
+Spa.prototype.attachStackError = function (err) {
+    if (this.getCurrentSuit().getCurrentTest()) {
+        this.getCurrentSuit().getCurrentTest().attachStackError(err)
+    } else if(this.getCurrentSuit().getCurrentHook()) {
+        this.getCurrentSuit().getCurrentHook().attachStackError(err)
+        this.getCurrentSuit().endHook()
+    }
+}
+
 Spa.prototype.getCurrentSuit = function () {
     return this.currentSuit
 }
@@ -31,10 +40,6 @@ Spa.prototype.attachData = function (data) {
 
 Spa.prototype.createStep = function (title) {
     this.getCurrentSuit().getCurrentTest().addStep(new Step(title))
-}
-
-Spa.prototype.setUpEcoSystem = function () {
-
 }
 
 Spa.prototype.endSuit = function () {
@@ -57,7 +62,7 @@ Spa.prototype.createReport = function (stats) {
 }
 
 
-Spa.prototype.buidPublickApi = function() {
+Spa.prototype.buidPublickApi = function () {
     const self = this
     return {
         createStep: self.createStep.bind(self),
