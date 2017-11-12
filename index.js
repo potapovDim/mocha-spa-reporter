@@ -1,9 +1,6 @@
 const Base = require("mocha").reporters.Base
 const Spec = require("mocha").reporters.Spec
-const Spa = require('./reporter').Spa
-const Suit = require('./suit').Suit
-const Test = require('./test').Test
-const Hook = require('./hook').Hook
+const { Spa, Suit, Test, Hook } = require('spa-base')
 
 const spaReporter = new Spa()
 
